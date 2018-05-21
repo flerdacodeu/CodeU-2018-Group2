@@ -6,4 +6,4 @@ Remember to create a branch named `jdb-0`
 instead of submitting to the `master` branch.
 
 If you have any questions, review the GitHub presentation or reach
-out to your group or mentor on Slack.
+out to your group or mentor on Slack or via Google Hangout.
