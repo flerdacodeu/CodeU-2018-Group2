@@ -1,15 +1,21 @@
 import unittest
 
+def sort_characters(words):
+    
+    words = words.split(" ")
+    words = sorted([''.join(sorted(i)) for i in words])
+    
+    return words
+    
+
 def is_anagram(str1, str2, case_sensitive):
     
     if not case_sensitive:
         str1.lower()
         str2.lower()
     
-    str1 = str1.split(" ")
-    str2 = str2.split(" ")
-    str1 = sorted([''.join(sorted(i)) for i in str1])
-    str2 = sorted([''.join(sorted(i)) for i in str2])
+    str1 = sort_characters(str1)
+    str2 = sort_characters(str2)
     
     return str1 == str2
 
