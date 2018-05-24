@@ -1,40 +1,23 @@
-from collections import deque
-
 class single_linked_node:
 
     def __init__(self, value=None, child=None):
         self.child = child
         self.value = value
 
-    def __getitem__(self, k, one_pass=True):
-        list_len = 0
-        visited_nodes = deque(maxlen=-k + 1)
+    def __getitem__(self, k):
+        current_pos = 0
+        k_th_back_node = self
         current_node = self
         while (current_node):
-            # if we want optimize by time and do one_pass through the
-            # linked list, we should keep k last visited nodes
-            if one_pass:
-                visited_nodes.append(current_node)                
-            list_len += 1
+            if current_pos > -k:
+                k_th_back_node = k_th_back_node.child
             current_node = current_node.child
-        element_num = list_len + k
-        if element_num > list_len or element_num <= 0:
+            current_pos += 1
+        list_len = current_pos
+        if not k_th_back_node or -k >= list_len:
             raise IndexError("Index '%s' is out of range, due the length of the list is '%s'"\
                              % (-k, list_len))
-        else:
-            if one_pass:
-                return visited_nodes.popleft().value
-            else:
-                # if we didn't keep k last visited nodes, we will go
-                # through the linked list again
-                current_num  = 0
-                current_node = self
-                while(current_node):
-                    current_num += 1
-                    if current_num == element_num:
-                        return current_node.value
-                    current_node = current_node.child
-
+        return k_th_back_node.value
 
 def from_iterable(iterable):
     prev_node = single_linked_node(iterable[0], None)
