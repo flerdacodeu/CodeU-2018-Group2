@@ -17,18 +17,16 @@ def are_words_anagram(s1, s2, case_sensitive=False, return_dicts=False):
         return char_counter_1 == char_counter_2
 
 def are_sentences_anagram(s1, s2, case_sensitive=False):
-    s1 = re.sub(r'[\W]', ' ', s1)
-    s2 = re.sub(r'[\W]', ' ', s2)
-    words1 = s1.split()
-    words2 = s2.split()
+    s1 = re.split(r'[\W]', s1)
+    s2 = re.split(r'[\W]', s2)
 
-    if len(words1) != len(words2):
+    if len(s1) != len(s2):
         return False
     else:
         words_1 = []
         words_2 = []
-        for i in range(len(words1)):
-            w1, w2 = are_words_anagram(words1[i], words2[i], \
+        for i in range(len(s1)):
+            w1, w2 = are_words_anagram(s1[i], s2[i], \
                      case_sensitive=case_sensitive, return_dicts=True)
             w1 = frozenset(w1.items())
             w2 = frozenset(w2.items())
