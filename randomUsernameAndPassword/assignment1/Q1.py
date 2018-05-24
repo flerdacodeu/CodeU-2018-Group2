@@ -7,7 +7,6 @@ def sort_characters(words):
     
     return words
     
-
 def is_anagram(str1, str2, case_sensitive):
     
     if not case_sensitive:
