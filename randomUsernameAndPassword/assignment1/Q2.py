@@ -1,41 +1,44 @@
 import unittest
 
 class Node:
-  def __init__(self, values):
-    assert(values)
-    head, tail = values[0], values[1:]
-    self.data = head
-    if tail:
-      self.next = Node(tail)
-    else:
-      self.next = None
+  
+    def __init__(self, values):
+        assert(values)
+        head, tail = values[0], values[1:]
+        self.data = head
+        if tail:
+            self.next = Node(tail)
+        else:
+            self.next = None
+            
+    def __getitem__(self, index):
+        length = self.len()
+        if (index >= length or index < -length):
+            raise IndexError()
+        if (index < 0):
+            index = index + length
+        
+        elem = self
+        for i in range(index):
+            elem = elem.next
+        return elem
+            
+    def len(self):
+        counter = 0
+        elem = self
+        while (elem is not None):
+            counter += 1
+            elem = elem.next
+        
+        return counter
 
-  def get_next(self):
-    return self.next
-
-  def get_data(self):
-    return self.data
 
 def get_kth_last(head, k):
-  if (head == None or k < 0):
-    return None
+    if (head == None or k < 0 or head.len() <= k):
+        raise IndexError()
   
-  elem = head
-  counter = 0
-  
-  while (elem is not None):
-    counter += 1
-    elem = elem.get_next()
-  
-  if counter <= k:
-      return None
-  
-  dist = counter - k - 1
-  elem = head
-  for i in range(0, dist):
-      elem = elem.get_next()
-  
-  return elem.get_data()
+    index = (-k) - 1 
+    return head[index].data
 
 
 class TestKthLastElement(unittest.TestCase):
@@ -45,10 +48,11 @@ class TestKthLastElement(unittest.TestCase):
         self.assertEqual(get_kth_last(list, 2), 6)
         self.assertEqual(get_kth_last(list, 0), 8)
         self.assertNotEqual(get_kth_last(list, 1), 8)
-        self.assertIsNone(get_kth_last(list, 10))
-        self.assertIsNone(get_kth_last(list, -1))
+        with self.assertRaises(IndexError):
+            get_kth_last(list, 10)
+        with self.assertRaises(IndexError):
+            get_kth_last(list, -1)
         
 
 if __name__ == "__main__":
     unittest.main()
-
