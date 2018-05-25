@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 
-class Node:
+class Node(object):
     def __init__(self, data):
         self.data = data
         self.next = None
 
 
-class LinkedList:
+class LinkedList(object):
     def __init__(self):
         self.head = None
 
@@ -17,7 +17,7 @@ class LinkedList:
         new_node.next = self.head
         self.head = new_node
 
-    def length(self):
+    def __len__(self):
         ans = 0
         cnt = self.head
         while cnt:
@@ -33,14 +33,17 @@ class LinkedList:
             cnt = cnt.next
         return "{" + ", ".join(ans) + "}"
 
-    # return kth element from end of list
-    def getKth(self, k):
-        len = self.length()
-        if k >= len:
+    # list[-k] returns kth element from end of list, last element is -1
+    def __getitem__(self, k):
+        length = len(self)
+
+        if k >= 0:
+            raise NotImplementedError()
+        elif k < -length:
             raise IndexError()
 
         cnt = self.head
-        for i in range(len - k - 1):
+        for i in range(length + k):
             cnt = cnt.next
         return cnt
 
@@ -50,6 +53,6 @@ if __name__ == "__main__":
     list.insert('dog')
     list.insert(set([1, 2, 3]))
     print("list is {}".format(list))
-    for k in range(3):
+    for k in range(1, 4):
         print("for k = {}, kth from last element is {}"
-              .format(k, list.getKth(k).data))
+              .format(k, list[-k].data))
