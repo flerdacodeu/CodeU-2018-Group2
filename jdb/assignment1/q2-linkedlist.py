@@ -41,8 +41,14 @@ class TestLinkedList(unittest.TestCase):
     self.assertEqual([n.value for n in LinkedList(list_)], list_)
 
   def test_len(self):
-    for l in ([1], [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]):
-      self.assertEqual(len(LinkedList(l)), len(l))
+    """len() of a LinkedList must be equal to the len of the input list."""
+    # for 2 sample lists, I test that the len of the list is the len
+    # of the LinkedList that is constructed with the list.
+    l1 = [1]
+    self.assertEqual(len(LinkedList(l1)), len(l1))
+    l2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+    self.assertEqual(len(LinkedList(l2)), len(l2))
+       
 
   def test_forward(self):
     ll = LinkedList(range(10))
