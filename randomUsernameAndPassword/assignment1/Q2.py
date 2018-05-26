@@ -12,7 +12,7 @@ class Node:
             self.next = None
             
     def __getitem__(self, index):
-        length = self.len()
+        length = len(self)
         if (index >= length or index < -length):
             raise IndexError()
         if (index < 0):
@@ -23,7 +23,7 @@ class Node:
             elem = elem.next
         return elem
             
-    def len(self):
+    def __len__(self):
         counter = 0
         elem = self
         while (elem is not None):
@@ -34,7 +34,7 @@ class Node:
 
 
 def get_kth_last(head, k):
-    if (head == None or k < 0 or head.len() <= k):
+    if (head == None or k < 0 or len(head) <= k):
         raise IndexError()
   
     index = (-k) - 1 
