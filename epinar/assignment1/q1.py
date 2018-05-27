@@ -1,30 +1,26 @@
+def normalize(s, caseSensitive=True):
+    if not caseSensitive:
+        s = s.lower()
 
-def isAnagram(str1, str2, caseSensitive = False):
-	if not caseSensitive:
-		str1 = str1.lower()
-		str2 = str2.lower()
+    s = s.split(' ')
 
-	return (sorted(list(str1)) == sorted(list(str2)))
+    s = [sorted(list(v)) for v in s]
 
-def isSentenceAnagram(sent1, sent2):
-	sent1 = sent1.split(' ')
-	sent2 = sent2.split(' ')
+    return sorted(s)
 
-	for i,v in enumerate(sent1):
-		sent1[i] = sorted(list(v))
 
-	for i,v in enumerate(sent2):
-		sent2[i] = sorted(list(v))
+def isAnagram(str1, str2, caseSensitive=True):
 
-	return sorted(sent1) == sorted(sent2)
+    return normalize(str1, caseSensitive) == normalize(str2, caseSensitive)
 
 def main():
-	str1 = 'triangle'
-	str2 = 'integraL'
-	print(isAnagram(str1, str2, True))
-	sent1 = 'ana baba'
-	sent2 = 'baab aan'
-	print(isSentenceAnagram(sent1, sent2))
+    str1 = 'triangle'
+    str2 = 'integraL'
+    print(isAnagram(str1, str2, False))
+    sent1 = 'ana baba'
+    sent2 = 'baaB aan'
+    print(isAnagram(sent1, sent2))
+
 
 if __name__ == '__main__':
     main()
