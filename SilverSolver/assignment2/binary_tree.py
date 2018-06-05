@@ -6,14 +6,36 @@ class BinaryNode:
         self.child1 = child1
         self.child2 = child2
 
-    def get_ancestors(self, prev_ancestors=None):
+    def get_ancestors(self, prev_ancestors=None, value=True):
         if not prev_ancestors:
             prev_ancestors = []
         if not self.parent:
             return prev_ancestors
         else:
-            prev_ancestors.append(self.parent.value)
-            return self.parent.get_ancestors(prev_ancestors=prev_ancestors)
+            if value:
+                prev_ancestors.append(self.parent.value)
+            else:
+                prev_ancestors.append(self.parent)
+            return self.parent.get_ancestors(prev_ancestors=prev_ancestors, value=value)
+
+    def get_lowest_common_ancestor(self, another_node, value=True):
+        self_anc = self.get_ancestors(value=False)
+        another_anc = another_node.get_ancestors(value=False)
+        low_c_anc = None
+        while(self_anc and another_anc):
+            if self_anc[-1] == another_anc[-1]:
+                low_c_anc = self_anc[-1]
+                self_anc = self_anc[:-1]
+                another_anc = another_anc[:-1]
+            else:
+                if value and low_c_anc:
+                    return low_c_anc.value
+                else:
+                    return low_c_anc
+        if value and low_c_anc:
+            return low_c_anc.value
+        else:
+            return low_c_anc
 
 class BinaryTree:
 
