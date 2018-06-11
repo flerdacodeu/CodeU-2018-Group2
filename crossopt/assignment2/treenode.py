@@ -44,7 +44,6 @@ class TreeNode:
         return ans
 
     # returns list of ancestors of current node
-    # TODO - this and height look similar
     def ancestors(self):
         ans = []
         cnt = self.parent
@@ -53,10 +52,9 @@ class TreeNode:
             cnt = cnt.parent
         return ans
 
-    # given two nodes in subtree, returns lca-node
+    # given two nodes, returns lca-node
+    # no subtree checks
     def lca(self, v1, v2):
-        if v1 not in self or v2 not in self:
-            raise KeyError
         height1 = v1.height()
         height2 = v2.height()
 
@@ -70,7 +68,7 @@ class TreeNode:
 
         return v1
 
-# TODO - add unit tests!
+
 if __name__ == "__main__":
     tree = TreeNode(5)
     tree.addRight("dog")
