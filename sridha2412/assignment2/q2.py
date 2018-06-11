@@ -20,10 +20,14 @@ def is_present(root: Node, key: int) -> bool:
 
 def find_lca(root: Node, node1: int, node2: int) -> int:
     """ method to find least common ancestor of two given nodes
-        note: if one key is ancestor of another, it returns the key """
+        note: if one key is ancestor of another, it returns the key
+        e.g we had lca(3,2) and 3 was the ancestor of 2, it would return 3"""
+
     # base cases
     if root is None:
         return None
+    # if either of the nodes are found, it implies that one is the ancestor of another
+    # this algorithm returns the node and doesn't try finding the ancestor of said node
     if root.data == node1:
         return root.data
     if root.data == node2:
@@ -39,32 +43,6 @@ def find_lca(root: Node, node1: int, node2: int) -> int:
 
     # else check right subtree if left is None and vice-versa
     return right_lca if left_lca is None else left_lca
-
-#       7
-#      / \
-#     3   4
-#    / \   \
-#   2   5   8
-#  / \
-# 1   6
-
-root = Node(7)
-root.left = Node(3)
-root.right = Node(4)
-root.left.left = Node(2)
-root.left.right = Node(5)
-root.right.right = Node(8)
-root.left.left.left = Node(1)
-root.left.left.right = Node(6)
-
-node1 = 6
-node2 = 5
-
-# check both nodes are present in tree
-if not is_present(root, node1) or not is_present(root, node2):
-    print ("Given nodes are not present")
-else:
-    print("LCA(", node1, ", ", node2, " = ", find_lca(root, node1, node2), ")", sep = "")
 
 
 import unittest

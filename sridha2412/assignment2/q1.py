@@ -8,7 +8,7 @@ class Node:
         self.left = None
         self.right = None
 
-def find_ancestors(root: Node, key: int, ancestors: list) -> bool:
+def find_ancestors(root: Node, key: int) -> bool:
     """ if key is present, return list of ancestors else return false """
     # base cases
     if root is None:
@@ -16,38 +16,14 @@ def find_ancestors(root: Node, key: int, ancestors: list) -> bool:
     if root.data == key:
         return True
 
-    # store all nodes in list
-    ancestors.append(root.data)
-
     # search for key in left and right subtrees
-    if find_ancestors(root.left, key, ancestors) or find_ancestors(root.right, key, ancestors) :
+    if find_ancestors(root.left, key) or find_ancestors(root.right, key) :
         return ancestors
 
     # if not ancestor, delete from list
     ancestors.pop()
 
     return False
-
-
-#       7
-#      / \
-#     3   4
-#    / \   \
-#   2   5   8
-#  / \
-# 1   6
-
-root = Node(7)
-root.left = Node(3)
-root.right = Node(4)
-root.left.left = Node(2)
-root.left.right = Node(5)
-root.right.right = Node(8)
-root.left.left.left = Node(1)
-root.left.left.right = Node(6)
-ancestors = []
-print("Key not found" if not find_ancestors(root, 6, ancestors)
-else ", ".join([str(i) for i in ancestors]))
 
 
 import unittest
