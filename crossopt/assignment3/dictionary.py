@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 
 
-class DictionaryNode:
+class _DictionaryNode:
     def __init__(self):
         self.children = dict()
         self.is_terminal = False
 
     def add(self, letter):
         if letter not in self.children:
-            self.children[letter] = DictionaryNode()
+            self.children[letter] = _DictionaryNode()
 
 
 # stores dictionary as Trie of DictionaryNodes
 # addWord, isPrefix, isWord are O(len(word))
 class Dictionary:
     def __init__(self, word_list=[]):
-        self.root = DictionaryNode()
+        self.root = _DictionaryNode()
         for word in word_list:
             self.addWord(word)
 
