@@ -1,3 +1,5 @@
+from typing import List
+
 class TrieNode:
     def __init__(self):
         """ Constructor to initlalize a trie node """
@@ -5,7 +7,7 @@ class TrieNode:
         self.is_word = False
 
 class Dictionary:
-    def __init__(self, words: list = []):
+    def __init__(self, words: List[str] = []):
         """ Constructor to initlalize a dictionary """
         self.root = TrieNode()
         for word in words:
@@ -40,45 +42,45 @@ class Dictionary:
 
 
 class Grid:
-    def __init__(self, grid: list):
+    def __init__(self, grid: List):
         """ Constructor to initlalize a grid """
         self.grid = grid
 
-    def get_neighbours(self, x: int, y: int) -> list:
+    def _get_neighbours(self, x: int, y: int) -> List:
         """ Method to find all possible neighbouring cells given position (x, y) in a grid """
         # 8 possible positions - vertical, horizontal and diagonal
         positions = [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y + 1), (x + 1, y + 1), (x + 1, y), (x + 1, y - 1), (x, y - 1)]
         return [pos for pos in positions if 0 <= pos[0] < len(self.grid) and 0 <= pos[1] < len(self.grid[0])]
 
-    def get_word(self, positions: list) -> str:
+    def _get_word(self, positions: List) -> str:
         """ Method to find corresponding word given a list of positions in grid """
         return ''.join(self.grid[pos[0]][pos[1]] for pos in positions)
 
-    def find_words(self, dictionary: Dictionary, position: list) -> list:
+    def _find_words(self, dictionary: Dictionary, position: List) -> List[str]:
         """ Method to return all words from given position """
         words = []
 
-        word = self.get_word(position)
+        word = self._get_word(position)
         if (not dictionary.is_prefix(word)):
             return []
         if (dictionary.is_word(word)):
             words.append(word)
 
-        neighbours = self.get_neighbours(position[-1][0], position[-1][1])
+        neighbours = self._get_neighbours(position[-1][0], position[-1][1])
         for pos in neighbours:
             if pos not in position:
                 position.append(pos)
-                words.extend(self.find_words(dictionary, position))
+                words.extend(self._find_words(dictionary, position))
                 position.remove(pos)
 
         return words
 
-    def find_all_words(self, dictionary: Dictionary) -> list:
-        """ Method to return list of all words found in grid """
+    def find_all_words(self, dictionary: Dictionary) -> List[str]:
+        """ Method to return List of all words found in grid """
         words = []
         for i in range(len(self.grid)):
             for j in range(len(self.grid[i])):
-                for word in self.find_words(dictionary, [(i, j)]):
+                for word in self._find_words(dictionary, [(i, j)]):
                     if word not in words:
                         words.append(word)
         return words
@@ -107,18 +109,18 @@ class Test(unittest.TestCase):
         self.assertEqual(self.dictionary.is_word('ACT'), False)
         self.assertEqual(self.dictionary.is_word('CARDS'), False)
 
-    def test_get_neighbours(self):
-        self.assertCountEqual(self.grid.get_neighbours(0, 0), [(0, 1), (1, 1), (1, 0)])
-        self.assertCountEqual(self.grid.get_neighbours(1, 1), [(0, 0), (0, 1), (0, 2), (1, 2), (1, 0)])
+    def test__get_neighbours(self):
+        self.assertCountEqual(self.grid._get_neighbours(0, 0), [(0, 1), (1, 1), (1, 0)])
+        self.assertCountEqual(self.grid._get_neighbours(1, 1), [(0, 0), (0, 1), (0, 2), (1, 2), (1, 0)])
 
     def test_get_word(self):
-        self.assertEqual(self.grid.get_word([(1, 1), (0, 1), (0, 2)]), 'CAR')
-        self.assertEqual(self.grid.get_word([(1, 1), (0, 1), (0, 2), (1, 2)]), 'CARD')
-        self.assertEqual(self.grid.get_word([(1, 1), (0, 1), (1, 0)]), 'CAT')
+        self.assertEqual(self.grid._get_word([(1, 1), (0, 1), (0, 2)]), 'CAR')
+        self.assertEqual(self.grid._get_word([(1, 1), (0, 1), (0, 2), (1, 2)]), 'CARD')
+        self.assertEqual(self.grid._get_word([(1, 1), (0, 1), (1, 0)]), 'CAT')
 
     def test_find_words(self):
-        self.assertEqual(self.grid.find_words(self.dictionary, [(1, 1)]), ['CAT', 'CAR', 'CARD', 'CAT'])
-        self.assertEqual(self.grid.find_words(self.dictionary, [(0, 0)]), [])
+        self.assertEqual(self.grid._find_words(self.dictionary, [(1, 1)]), ['CAT', 'CAR', 'CARD', 'CAT'])
+        self.assertEqual(self.grid._find_words(self.dictionary, [(0, 0)]), [])
 
     def test_find_all_words(self):
         self.assertEqual(self.grid.find_all_words(self.dictionary), ['CAT', 'CAR', 'CARD'])
