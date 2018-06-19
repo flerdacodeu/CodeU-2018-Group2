@@ -70,6 +70,7 @@ def _search(grid, dict, s, i, j, isVisited, found_words):
 	if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]):
 		return found_words
 	if isVisited[i][j]:
+		isVisited[i][j] = False
 		return found_words
 
 	if dict.isWord(s):
