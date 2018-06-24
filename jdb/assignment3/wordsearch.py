@@ -13,22 +13,14 @@ class Grid:
     return self.grid[position[1]][position[0]]
 
   def words(self):
-    """Returns words found on the grid."""
     words = set()
-    for slot in product(range(self.x_max), range(self.y_max)):
-      self._check_prefixes(slot, words)
-    # the returned words are reverse-sorted by word length.
-    return sorted(words, key=lambda w: (-len(w), w))
-
-  def _check_prefixes(self, slot, words):
-    traversal = self._traverse(slot)
+    traversal = self._traverse()
     backtrack_request = None
     while True:
       try:
         path = traversal.send(backtrack_request)
       except StopIteration:
         return words
-
       prefix = ''.join(self[s] for s in path)
       if not self.lexicon.is_prefix(prefix):
         backtrack_request = True
@@ -36,29 +28,33 @@ class Grid:
         backtrack_request = False
         if self.lexicon.is_word(prefix):
           words.add(prefix)
+    return words
 
-
-  def _traverse(self, slot, path=None):
-    """Traverses the paths starting from 'position'."""
+  def _traverse(self, path=None):
+    """Yields all possible path through the grid."""
+    # There is two cases:
+    # - path empty: first position from which to start prefix is any position
+    # - path non-empty: the next position must be picked from the neighbors
     if path is None:
       path = OrderedDict()
-
-    path[slot] = True
-
-    backtrack_request = yield path
-    if not backtrack_request:
-      for slot in self._children(path, *slot):
-        yield from self._traverse(slot, path)
-
-    path.popitem()
-
-  def _children(self, visited, x, y):
-    """Generate the unvisited neighbors of 'position'."""
-    for dx, dy in product([-1, 0, 1], [-1, 0, 1]):
-        xn, yn = x + dx, y + dy
-        if (0 <= xn < self.x_max and 0 <= yn < self.y_max and
-            (xn, yn) not in visited):
-          yield xn, yn
+      for x, y in product(range(self.x_max), range(self.y_max)):
+        path[(x, y)] = True
+        backtrack_request = yield path
+        if not backtrack_request:
+          yield from self._traverse(path)
+        path.popitem()
+    else:
+      for dx, dy in product([-1, 0, 1], [-1, 0, 1]):
+        (xl, yl), _ = path.popitem()
+        x, y = xl + dx, xl + dy
+        path[(xl, yl)] = True
+        if (0 <= x < self.x_max and 0 <= y < self.y_max
+            and (x, y) not in path):
+          path[(x, y)]= True
+          backtrack_request = yield path
+          if not backtrack_request:
+            yield from self._traverse(path)
+          path.popitem()
 
 
 def load_lexicon():
@@ -119,15 +115,15 @@ class TestTrie(unittest.TestCase):
     self.assertFalse(trie['NoTfOuNd'])
 
 
-class TestBuggles(unittest.TestCase):
+class TestGrid(unittest.TestCase):
 
-  def test_children(self):
-    neighbors = list(Grid('abc', 'def', 'ghi', lexicon=True)
-                     ._children(set(), 1, 0))
-    self.assertIn((1, 1), neighbors)
-    self.assertIn((0, 0), neighbors)
-    self.assertNotIn((1, 2), neighbors)
-    self.assertNotIn((1, -1), neighbors)
+  def test_traverse(self):
+    neighbors = set(
+      tuple(p) for p in Grid('abc', 'def', 'ghi', lexicon=True)._traverse())
+    self.assertIn(((1, 1),), neighbors)
+    self.assertIn(((0, 0),), neighbors)
+    self.assertIn(((1, 2),), neighbors)
+    self.assertNotIn(((1, -1),), neighbors)
 
   def test_getitem(self):
     grid = Grid('abc', 'def', 'ghi', lexicon=True)
