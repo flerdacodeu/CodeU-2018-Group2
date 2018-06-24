@@ -5,49 +5,22 @@ import unittest
 class Dictionary:
 
 	def __init__(self, words, prefixes):
-		"""
-		The dictionary class to keep the values.
-		:param words: Valid entries in a dictionary.
-		:type words: Array of strings.
-		:param prefixes: Valid prefixes of each words in the dictionary.
-		:type prefixes: Array of strings.
-		"""
 		self.words = words
 		self.prefixes = prefixes
 
+	# Returns whether the given string is a valid word.
 	def isWord(self, s):
-		"""
-		Returns whether the given string is a valid word.
-		:param s: Word query.
-		:type s: String
-		:return: If the string is valid.
-		:rtype: bool
-		"""
 		return s in self.words
 
+	# Returns whether the given string is a prefix of at least one word in
+	# the dictionary.
 	def isPrefix(self, s):
-		"""
-		Returns whether the given string is a prefix of at least one word in
-		the dictionary.
-		:param s: Prefix query.
-		:type s: String
-		:return: If the string is valid.
-		:rtype: bool
-		"""
 		return s in self.prefixes
 
 
+# Given a grid of letters and a dictionary, it finds all the words from the
+# dictionary that can be formed in the grid.
 def word_search(grid, dict):
-	"""
-	Given a grid of letters and a dictionary, it finds all the words from the
-	dictionary that can be formed in the grid.
-	:param grid: The grid of characters to search in.
-	:type grid: 2 dimensional array of characters, M x N .
-	:param dict: The dictionary of words and prefixes.
-	:type dict: Dictionary class object.
-	:return: Set of all words found in the grid.
-	:rtype: Array of strings
-	"""
 
 	found_words = []
 	new_words = []
@@ -56,21 +29,21 @@ def word_search(grid, dict):
 
 	for k in range(M):
 		for l in range(N):
-			visited_cache = [[False for _ in range(N)] for _ in range(M)]
-			print("Start looking... ", k, l)
-			new_words += _search(grid, dict, "", k, l, visited_cache, [])
-			found_words += list(set(new_words))
-			print("looked! ", k , l )
+			# visited_cache = [[False for _ in range(N)] for _ in range(M)]
+			visited_cache = []
+			for i in range(M):
+				visited_cache.append([])
+				for j in range(N):
+					visited_cache[i].append(False)
+			found_words += list(set(_search(grid, dict, "", k, l, visited_cache, [])))
 
 	return sorted(found_words)
 
 
 def _search(grid, dict, s, i, j, isVisited, found_words):
-	print("<search call")
 	if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]):
 		return found_words
 	if isVisited[i][j]:
-		isVisited[i][j] = False
 		return found_words
 
 	if dict.isWord(s):
@@ -80,19 +53,10 @@ def _search(grid, dict, s, i, j, isVisited, found_words):
 
 	if dict.isPrefix(s):
 		isVisited[i][j] = True
-		print("Prefix found! ", i, ' ', j, ' ', s)
-		print("  :::", isVisited)
-		vis = isVisited[:]
 		for v in [-1, 0, 1]:
 			for h in [-1, 0, 1]:
-				print('for: ', s, " search start at: ", i + h, j + v, 'visited:', vis)
-				found_words += _search(grid, dict, s, i + h, j + v, vis, found_words)
-				print('for: ', s, " search end at: ", i + h, j + v, 'visited:', vis)
-
-		print("End of search for prefix! ", i, ' ', j, ' ', s)
-		print("  :::", isVisited)
-
-	print(" --- return")
+				found_words += _search(grid, dict, s, i + h, j + v, isVisited, found_words)
+				isVisited[i][j] = False
 	return found_words
 
 def main():
