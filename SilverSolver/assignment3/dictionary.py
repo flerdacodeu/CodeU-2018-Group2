@@ -9,7 +9,7 @@ class Dictionary:
     
     def __init__(self, first_char='*', iterable=None):
         self.char = first_char
-        self.children = []
+        self.children = set()
         self.word_finished = False
         if iterable:
             for word in iterable:
@@ -29,7 +29,7 @@ class Dictionary:
             # We did not find it so add a new chlid
             if not found_in_child:
                 new_node = Dictionary(char)
-                node.children.append(new_node)
+                node.children.add(new_node)
                 node = new_node
         node.word_finished = True
 
