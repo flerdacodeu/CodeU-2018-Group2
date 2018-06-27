@@ -7,7 +7,7 @@ class TestDict(unittest.TestCase):
     def test_0(self):
         root = Dictionary()
         self.assertEqual(root.isPrefixOrWord('hackathon'), (False, False))
-        self.assertEqual(root.isPrefixOrWord(''), (False, False))
+        self.assertEqual(root.isPrefixOrWord(''), (True, False))
         
     def test_1(self):
         root = Dictionary(iterable=["hackathon", "hack"])

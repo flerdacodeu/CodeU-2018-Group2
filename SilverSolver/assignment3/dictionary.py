@@ -9,7 +9,7 @@ class Dictionary:
     
     def __init__(self, first_char='*', iterable=None):
         self.char = first_char
-        self.children = set()
+        self.children = {}
         self.word_finished = False
         if iterable:
             for word in iterable:
@@ -18,40 +18,18 @@ class Dictionary:
     def add(self, word: str):
         node = self
         for char in word:
-            found_in_child = False
-            # Search for the character in the children of the present `node`
-            for child in node.children:
-                if child.char == char:
-                    # And point the node to the child that contains this char
-                    node = child
-                    found_in_child = True
-                    break
-            # We did not find it so add a new chlid
-            if not found_in_child:
-                new_node = Dictionary(char)
-                node.children.add(new_node)
-                node = new_node
+            if char not in node.children:
+                node.children[char] = Dictionary()
+            node = node.children[char]
         node.word_finished = True
 
     def isPrefixOrWord(self, prefix: str) -> Tuple[bool, bool]:
         # This helper function returns tuple with meaning (isWord, isPrefix)
         node = self
-        # If the self node has no children, then return False.
-        # Because it means we are trying to search in an empty trie
-        if not self.children:
-            return False, False
         for char in prefix:
-            char_not_found = True
-            # Search through all the children of the present `node`
-            for child in node.children:
-                if child.char == char:
-                    # We found the char existing in the child.
-                    char_not_found = False
-                    node = child
-                    break
-            # Return False anyway when we did not find a char.
-            if char_not_found:
+            if char not in node.children:
                 return False, False
+            node = node.children[char]
         return True, node.word_finished
 
     def isWord(self, word: str) -> bool:

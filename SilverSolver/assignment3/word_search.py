@@ -7,7 +7,6 @@ def word_search(grid: List[List[str]], dictionary: Dictionary) -> List[str]:
     def neighbours(coords: Tuple[int]) -> Tuple[Tuple[int]]:
         a, b = coords
         neigh_coords = [(a + i, b + j) for i in [-1, 1, 0] for j in [-1, 1, 0] if (i, j) != (0, 0)]
-        #return filter(lambda x: x[0] >= 0 and x[1] >= 0 and x[0] < m and x[1] < n, neigh_coords)
         return [(x, y) for x, y in neigh_coords if 0 <= x < m and 0 <= y < n]
     
     def search(coords: Tuple[int, int]):
