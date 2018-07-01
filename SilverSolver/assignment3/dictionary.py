@@ -1,11 +1,6 @@
 from typing import Tuple
 
 class Dictionary:
-    """
-    I used some code from here to implement the trie -
-    https://towardsdatascience.com/implementing-a-trie-data-structure-in-python-in-less-than-100-lines-of-code-a877ea23c1a1
-    then modified it for my purposes
-    """
     
     def __init__(self, first_char='*', iterable=None):
         self.char = first_char

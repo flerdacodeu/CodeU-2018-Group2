@@ -32,5 +32,11 @@ class TestWordSearch(unittest.TestCase):
         self.assertEqual(word_search([["a", "a", "r"], ["t", "c", "d"]], \
                          Dictionary(iterable=["car", "card", "cart", "cat"])), \
 			 {'car', 'card', 'cat'})
+
+    def test_2(self):
+        words = ['crash', 'crush']
+        self.assertEqual(word_search([['c','r','a','s','h'], ['z','z','u','z','z']],\
+                         Dictionary(iterable=words)), {'crush', 'crash'})
+
 if __name__ == '__main__':
     unittest.main()
