@@ -5,14 +5,6 @@ from assignment4.countislands import Grid
 
 
 class TestGrid(unittest.TestCase):
-    def test_colorislands(self):
-        colors = Grid(4, 4, [[0, 1, 0, 1], [1, 1, 0, 0],
-                             [0, 0, 1, 0], [0, 0, 1, 0]]).colorIslands()
-        self.assertEqual(colors[(1, 0)], colors[(0, 1)])
-        self.assertNotEqual(colors[(1, 0)], colors[(2, 2)])
-        self.assertNotEqual(colors[(0, 0)], colors[(1, 0)])
-        self.assertNotEqual(colors[(0, 0)], colors[(0, 3)])
-
     def test_countislands(self):
         grid = Grid(4, 4, [[0, 1, 0, 1], [1, 1, 0, 0],
                            [0, 0, 1, 0], [0, 0, 1, 0]])
