@@ -1,48 +1,49 @@
 from typing import List, Tuple
 import unittest
 
-class Grid:
-    def __init__(self, grid: List):
-        """ Constructor to initialize a grid """
-        self.grid = grid
-        self.row = len(self.grid)
-        self.col = len(self.grid[0])
+def _find_land(grid: List, i: int, j: int):
+    """ Method to find all neighbouring land of an island
+    Args:
+        grid: 2D array of tiles of either land or water
+        i: i-th coord of current position (i, j)
+        j: j-th coord of current position (i, j)
+    """
+    # mark current position as visited
+    grid[i][j] = 0;
+    # 4 possible positions - horizontal and vertical
+    positions = [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]
 
-    def _get_neighbours(self, x: int, y: int) -> List[Tuple[int, int]]:
-        """ Method to find all horizontal and vertical neighbouring cells given position (x, y) """
-        # 4 possible positions - horizontal and vertical
-        positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-        return [pos for pos in positions if 0 <= pos[0] < self.row and 0 <= pos[1] < self.col]
+    for pos in positions:
+        if 0 <= pos[0] < len(grid) and 0 <= pos[1] < len(grid[0]) and grid[pos[0]][pos[1]] == 1:
+            _find_land(grid, pos[0], pos[1])
 
-    def _find_land(self, i: int, j: int, visited: List[Tuple[int, int]]):
-        """ Method to find all neighbouring land of an island """
-        visited.append((i, j))
-        neighbours = self._get_neighbours(i, j)
-        for pos in neighbours:
-            if pos not in visited and self.grid[pos[0]][pos[1]] == 1:
-                self._find_land(pos[0], pos[1], visited)
 
-    def count_island(self) -> int:
-        """ Method to count all islands in a given grid and return it """
-        visited = []
-        count = 0
+def count_island(grid: List) -> int:
+    """ Method to count all islands in a given grid and return it
+    Args:
+        grid: 2D array of tiles of either land or water
+    Returns:
+        int: the count of islands in given grid
+    """
+    count = 0
 
-        for i in range(self.row):
-            for j in range(self.col):
-                if (i, j) not in visited and self.grid[i][j] == 1:
-                    self._find_land(i, j, visited)
-                    count += 1
-
-        return count
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                _find_land(grid, i, j)
+                count += 1
+    return count
 
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.grid = Grid([[0, 1, 0, 1], [1, 1, 0, 0], [0, 0, 1, 0], [0, 0, 1, 0]])
-
-    def test__get_neighbours(self):
-        self.assertCountEqual(self.grid._get_neighbours(0, 0), [(1, 0), (0, 1)])
-        self.assertCountEqual(self.grid._get_neighbours(1, 1), [(0, 1), (2, 1), (1, 0), (1, 2)])
+        self.grid = [[0, 1, 0, 1], [1, 1, 0, 0], [0, 0, 1, 0], [0, 0, 1, 0]]
+        self.grid2 = [[1, 1, 1, 1], [0, 0, 0, 1], [0, 0, 1, 1], [0, 0, 1, 0]]
+        self.grid3 = [[0, 0, 0], [0, 0, 0]]
+        self.grid4 = [[1, 0, 0, 0], [0, 1, 1, 0], [1, 0, 0, 1], [0, 0, 1, 0]]
 
     def test_count_island(self):
-        self.assertEqual(self.grid.count_island(), 3)
+        self.assertEqual(count_island(self.grid), 3)
+        self.assertEqual(count_island(self.grid2), 1)
+        self.assertEqual(count_island(self.grid3), 0)
+        self.assertEqual(count_island(self.grid4), 5)
