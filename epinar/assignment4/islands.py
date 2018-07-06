@@ -53,3 +53,7 @@ class CountIslands(unittest.TestCase):
 		self.assertEqual(1, count_islands(self.map5))
 		self.assertEqual(2, count_islands(self.map6))
 		self.assertEqual(8, count_islands(self.map7))
+<<<<<<< HEAD
+=======
+
+>>>>>>> e64b7cc7c439cfff7ff7a676ad777ab65a178bc2
