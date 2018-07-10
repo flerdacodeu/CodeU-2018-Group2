@@ -1,6 +1,6 @@
-import string
-import unittest
 
+import unittest
+from itertools import product
 
 class Dictionary:
 
@@ -22,8 +22,7 @@ class Dictionary:
 # dictionary that can be formed in the grid.
 def word_search(grid, dict):
 
-	found_words = []
-	new_words = []
+	found_words = set()
 	M = len(grid)
 	N = len(grid[0])
 
@@ -35,29 +34,31 @@ def word_search(grid, dict):
 				visited_cache.append([])
 				for j in range(N):
 					visited_cache[i].append(False)
-			found_words += list(set(_search(grid, dict, "", k, l, visited_cache, [])))
+			_search(grid, dict, "", k, l, visited_cache, found_words)
 
 	return sorted(found_words)
 
 
 def _search(grid, dict, s, i, j, isVisited, found_words):
 	if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]):
-		return found_words
+		return
 	if isVisited[i][j]:
-		return found_words
-
-	if dict.isWord(s):
-		found_words.append(str(s))
+		return
 
 	s = s + grid[i][j]
 
+	if dict.isWord(s):
+		# print(" word: ", str(s))
+		found_words.add(str(s))
+
 	if dict.isPrefix(s):
+		# print("   prefix: ", s)
 		isVisited[i][j] = True
-		for v in [-1, 0, 1]:
-			for h in [-1, 0, 1]:
-				found_words += _search(grid, dict, s, i + h, j + v, isVisited, found_words)
-				isVisited[i][j] = False
-	return found_words
+		for dx, dy in product([-1, 0, 1], [-1, 0, 1]):
+			_search(grid, dict, s, i + dy, j + dx, isVisited, found_words)
+		isVisited[i][j] = False
+
+	return
 
 def main():
 	dict1 = Dictionary(['CAR', 'CARD', 'CART', 'CAT', 'CATAR'],
@@ -85,8 +86,15 @@ class SearchTest(unittest.TestCase):
 								['C', 'CA', 'CAR', 'CARD', 'CART', 'CAT', 'CATA', 'CATAR'])
 		self.grid1 = [['A', 'A', 'R'], ['T', 'C', 'D']]
 
+		self.dict5 = Dictionary(['CRASH', 'CRUSH'],
+								['C', 'CR', 'CRU', 'CRUS', 'CRUSH', 'CRA', 'CRAS', 'CRASH'])
+
+		self.grid2 = [['C', 'R', 'A', 'S', 'H'],
+					  ['Z', 'Z', 'U', 'Z', 'Z']]
+
 	def test_search(self):
 		self.assertEqual(sorted(['CAR', 'CARD', 'CAT']), word_search(self.grid1, self.dict1))
 		self.assertNotEqual(sorted(['CAR', 'CARD', 'CAT', 'ART']), word_search(self.grid1, self.dict2))
 		self.assertEqual(sorted(['RAT', 'RAD']), word_search(self.grid1, self.dict3))
 		self.assertEqual(sorted(['CAR', 'CARD', 'CAT', 'CATAR']), word_search(self.grid1, self.dict4))
+		self.assertEqual(sorted(['CRASH', 'CRUSH']), word_search(self.grid2, self.dict5))
