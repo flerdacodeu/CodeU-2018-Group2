@@ -7,12 +7,9 @@ class Grid:
   def __init__(self, *grid, lexicon=None):
     self.grid, self.lexicon = grid, lexicon if lexicon else load_lexicon()
     self.x_max, self.y_max = len(grid[0]), len(grid)
-
-  def __getitem__(self, position):
-    """Returns the letter found at 'position'."""
-    return self.grid[position[1]][position[0]]
-
+    
   def words(self):
+    """Yields the words found on the Greid."""
     words = set()
     traversal = self._traverse()
     backtrack_request = None
@@ -21,13 +18,13 @@ class Grid:
         path = traversal.send(backtrack_request)
       except StopIteration:
         return words
-      prefix = ''.join(self[s] for s in path)
-      if not self.lexicon.is_prefix(prefix):
-        backtrack_request = True
-      else:
+      prefix = ''.join(self.grid[p[1]][p[0]] for p in path)
+      if self.lexicon.is_prefix(prefix):
         backtrack_request = False
         if self.lexicon.is_word(prefix):
           words.add(prefix)
+      else:
+        backtrack_request = True
     return words
 
   def _traverse(self, path=None):
@@ -44,12 +41,11 @@ class Grid:
           yield from self._traverse(path)
         path.popitem()
     else:
+      last, _ = path.popitem()
+      path[last] = True
       for dx, dy in product([-1, 0, 1], [-1, 0, 1]):
-        (xl, yl), _ = path.popitem()
-        x, y = xl + dx, xl + dy
-        path[(xl, yl)] = True
-        if (0 <= x < self.x_max and 0 <= y < self.y_max
-            and (x, y) not in path):
+        x, y = last[0] + dx, last[1] + dy
+        if (0 <= x < self.x_max and 0 <= y < self.y_max and (x, y) not in path):
           path[(x, y)]= True
           backtrack_request = yield path
           if not backtrack_request:
@@ -125,14 +121,15 @@ class TestGrid(unittest.TestCase):
     self.assertIn(((1, 2),), neighbors)
     self.assertNotIn(((1, -1),), neighbors)
 
-  def test_getitem(self):
+  def test_grid(self):
     grid = Grid('abc', 'def', 'ghi', lexicon=True)
     for letter, position in zip('abcdefghi',
                                 ((x, y) for y in range(3) for x in range(3))):
-      self.assertEqual(grid[position], letter)
+      self.assertEqual(grid.grid[position[1]][position[0]], letter)
 
   def test_words(self):
     words = Grid('aar', 'tcd').words()
     for word in ['card', 'data', 'act', 'arc', 'cad', 'car', 'cat', 'rat',
                  'rca', 'tad', 'tar', 'ac', 'ad']:
       self.assertIn(word, words)
+      
