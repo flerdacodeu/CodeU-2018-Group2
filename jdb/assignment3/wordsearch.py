@@ -9,7 +9,7 @@ class Grid:
     self.x_max, self.y_max = len(grid[0]), len(grid)
     
   def words(self):
-    """Yields the words found on the Greid."""
+    """Yields the words found on the Grid."""
     words = set()
     traversal = self._traverse()
     backtrack_request = None
@@ -34,8 +34,8 @@ class Grid:
     # - path non-empty: the next position must be picked from the neighbors
     if path is None:
       path = OrderedDict()
-      for x, y in product(range(self.x_max), range(self.y_max)):
-        path[(x, y)] = True
+      for position in product(range(self.x_max), range(self.y_max)):
+        path[position] = True
         backtrack_request = yield path
         if not backtrack_request:
           yield from self._traverse(path)
