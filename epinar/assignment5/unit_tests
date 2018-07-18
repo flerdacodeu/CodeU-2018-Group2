@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import unittest
+from unknown_alphabet import find_alphabets, find_alphabet
+
+
+class TestDictionary(unittest.TestCase):
+
+	def check_equal(self, L1, L2):
+		return sorted(L1) == sorted(L2)
+
+	def test_find_alphabets(self):
+		self.check_equal(find_alphabets(['ART', 'RAT', 'CAT']), [['T', 'A', 'R', 'C'], ['A', 'T', 'R', 'C'], ['A', 'R', 'T', 'C'], ['A', 'R', 'C', 'T']])
+		self.check_equal(find_alphabets(['ART', 'RAT', 'CAT', 'CAR']), [['T', 'A', 'R', 'C'], ['A', 'T', 'R', 'C']])
+		self.check_equal(find_alphabets(['S', 'ART', 'RAT', 'CAT', 'CAR']), [['S', 'A', 'T', 'R', 'C'], ['S', 'T', 'A', 'R', 'C'], ['T', 'S', 'A', 'R', 'C']])
+
+	def test_find_alphabet(self):
+		self.assertEqual(find_alphabet(["1a", "1b", "a1", "ab"]), ["1", "a", "b"])
+
+
+if __name__ == '__main__':
+	unittest.main()
