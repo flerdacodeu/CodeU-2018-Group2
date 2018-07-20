@@ -19,8 +19,8 @@ class Grid(object):
                 if j and self.grid[i][j] and self.grid[i][j - 1]:
                     self.join((i, j), ((i, j - 1)))
 
-    # returns unique id for each island
     def __getitem__(self, u):
+        """ returns unique id for each island """
         if self.parents[u] != u:
             self.parents[u] = self[self.parents[u]]
         return self.parents[u]
@@ -33,8 +33,8 @@ class Grid(object):
         self.sizes[u] += self.sizes[v]
         self.parents[v] = u
 
-    # returns amount of islands in grid
     def countIslands(self):
+        """ returns amount of islands in grid """
         colors = set()
         for i in range(self.n):
             for j in range(self.m):
