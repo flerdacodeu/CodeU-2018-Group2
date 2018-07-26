@@ -1,7 +1,7 @@
 def car_positions(state):
     """ given state returns array where ith element is the position of ith car """
-    positions = [0] * len(start)
-    for place, car in enumerate(start):
+    positions = [0] * len(state)
+    for place, car in enumerate(state):
         positions[car] = place
     return positions
 
