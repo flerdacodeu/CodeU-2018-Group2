@@ -15,7 +15,7 @@ def check_input(start: List[int], final: List[int]) -> bool:
     final_set = set(final)
     car_set = set([i for i in range(len(start))])
 
-    # let's return False in the case of an empty sets
+    # let's return False in the case of an empty set
     if len(start_set) == 0 or len(final_set) == 0:
         return False
 
@@ -80,8 +80,8 @@ def generate_moves(start: List[int], final: List[int]) -> List[int]:
             yield car, place, empty_place
             empty_place = _move(car_positions, car)
 
-        # move car that should end up in current empty space while such a car
-        # exists
+        # move car that should end up in current empty space while such a
+        # car exists
         while final[empty_place]:
             current_car = final[empty_place]
             yield current_car, car_positions[current_car], empty_place

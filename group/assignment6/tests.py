@@ -5,13 +5,26 @@ from move_cars import *
 
 def check_movement_correctness(start: List[int], final: List[int], \
                                moves: List[Tuple[int]]) -> bool:
-    # each move has format (car number, old space, new space)
+    """ Method to check correctness of moves
+    Args:
+        start: list of integers where ith element is the car currently in the
+               ith space
+        final: list of integers where ith element is the car that should be in
+               the ith space
+        moves: list of tuples of integers.
+               Each move has format (car number, old space, new space)
+    Return:
+        bool:  is the move correct
+    """
     current_pos = start[:]
     for move in moves:
         car, old_space, new_space = move
+        if current_pos[new_space] != 0:
+            return False
+        if current_pos[old_space] != car:
+            return False
         current_pos[old_space] = 0
         current_pos[new_space] = car
-    print(len(moves) , " moves were made from ", start, " to ", final)
     return current_pos == final
 
 class TestMoveCars(unittest.TestCase):
@@ -40,6 +53,7 @@ class TestMoveCars(unittest.TestCase):
         start, final = [1, 2, 0, 3], [3, 1, 2, 0]
         self.assertTrue(check_movement_correctness(start, final, \
                         list(generate_moves(start, final))))
+        self.assertEqual(len(list(generate_moves(start, final))), 3)
 
 
 if __name__ == '__main__':
